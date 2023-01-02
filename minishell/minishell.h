@@ -68,31 +68,7 @@ typedef struct s_env
 }				t_env;
 
 //....................../execution/.....................
-//./execution/built-ins/ft_env.c
-/*void	ft_free_env(t_env *env);
-int		ft_env_cmd(t_env *env, char **content);
-void	print_env(t_env *env);
-t_env	*ft_env(char **nv);
-//./execution/built-ins/ft_exit.c
-int		ft_exit(char **content, t_env *env);
-//./execution/built-ins/ft_pwd.c
-int		ft_pwd(char **content, t_env *envp);
-void	ft_export(char **cmd, t_env **env);
-void	ft_cd(char **cmd, t_env *env);
-void	ft_unset(char **cmd, t_env *env);
-int		ft_echo(char **content);
-//./execution/check_redirections.c
-int		check_redirections(t_red *red);
-int		create_file(t_red *red, int fd);
-//./execution/ft_execute.c
-void	exec_multi_cmd(t_cmd *cmd_list, t_env **env);
-void	exec_all(t_cmd *cmd, t_env **env);
-char	**lst_to_array(t_env *env, char *save);
-bool	is_builtins(char *cmd);
-int		exec_builtins(char **cmd, t_red *red, t_env *env);
-int		check_redirections(t_red *red);
-char	*ft_getenv(t_env *envirement, char *name);*/
-//....................../include/.......................
+
 t_env   *fill_env(char **envp, t_env *env);
 void    execution_base(t_cmd *cmd, t_env *env, char **envp);
 void  	ft_echo(char **str);
@@ -100,6 +76,10 @@ void    ft_cd(char **str, t_env *env);
 void    ft_env(char **str, t_env *env);
 void    ft_pwd(void);
 int 	ft_strcmpp(char *str1, char *str2);
+void    ft_export(char **str, t_env *env);
+t_env   *ft_unset(t_env **env, t_cmd *cmd);
+
+//....................../include/.......................
 
 //./include/cmd_include.c
 t_cmd	*ft_cmdlast(t_cmd *cmd);

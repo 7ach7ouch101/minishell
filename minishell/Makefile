@@ -13,7 +13,7 @@
 LIBFT = libft/libft.a
 NAME = minishell
 RM = rm -rf
-CC = cc
+CC = gcc
 SRC = minishell.c \
 \
 	  include/cmd_include.c include/dubstr_include.c include/env_include.c\
@@ -28,7 +28,7 @@ SRC = minishell.c \
 	  parsing/ft_errors.c parsing/redirections_parser.c parsing/split_pipe.c\
 	  parsing/wildcard.c  execution/execution_base.c execution/builtins/ft_echo.c\
 	  execution/builtins/ft_cd.c fill_env.c execution/builtins/ft_env.c\
-	   execution/builtins/ft_pwd.c\
+		execution/builtins/ft_pwd.c execution/builtins/ft_unset.c execution/builtins/ft_export.c\
 
 OBJ = $(SRC:.c=.o)
 	

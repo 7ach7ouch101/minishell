@@ -13,7 +13,7 @@ void    ft_pipe2(int fd[])
     close(fd[1]);
 }
 
-int exe_builtins(t_cmd *cmd, t_env *env)
+void    exe_builtins(t_cmd *cmd, t_env *env)
 {
     if(ft_strcmpp(cmd->content[0], "echo") == 0)
         ft_echo(cmd->content);
@@ -23,6 +23,10 @@ int exe_builtins(t_cmd *cmd, t_env *env)
         ft_cd(cmd->content, env);
     else if(ft_strcmpp(cmd->content[0], "pwd") == 0)
         ft_pwd();
+    else if(ft_strcmpp(cmd->content[0], "unset") == 0)
+        ft_unset(&env, cmd);
+    else if(ft_strcmpp(cmd->content[0], "export") == 0)
+        ft_export(cmd->content, env);
 }
 
 int check_builtins(char *str)
@@ -34,6 +38,10 @@ int check_builtins(char *str)
     else if(ft_strcmpp(str, "cd") == 0)
         return (0);
     else if(ft_strcmpp(str, "pwd") == 0)
+        return (0);
+    else if(ft_strcmpp(str, "unset") == 0)
+        return (0);
+    else if(ft_strcmpp(str, "export") == 0)
         return (0);
     return (1);
 }
@@ -109,32 +117,28 @@ void    exe_cmds(t_cmd *cmd, t_env *env, char **envp)
     {
         if(cmd->next)
             ft_pipe(fd);
-        if(check_builtins(cmd->content[0]) == 0)
-        {
-            exe_builtins(cmd, env);
-            exit(0);
-        }
-        execute_cmd(cmd, env, envp);
+        if(check_builtins(cmd->content[0]) != 0)
+            execute_cmd(cmd, env, envp);
         exit(0);
     }
+    exe_builtins(cmd, env);
     if(cmd->next)
         ft_pipe2(fd);
     else
-    {
         close(0);
-    }
-    waitpid(-1, NULL, 0);
 }
 
 void    execution_base(t_cmd *cmd, t_env *env, char **envp)
 {
     int fd[2];
     int save_in;
+    t_cmd *tmp;
 
+    tmp = cmd;
     save_in = dup(0);
     fd[0] = dup(0);
 	fd[1] = dup(1);
-    while(1)
+    while(cmd)
     {
         if(cmd->red)
             redirections(cmd->red);
@@ -146,9 +150,12 @@ void    execution_base(t_cmd *cmd, t_env *env, char **envp)
             close(fd[1]);
             close(fd[0]);
         }
-        if(cmd->next == NULL)
-           break ;
         cmd = cmd->next;
+    }
+    while(tmp)
+    {
+        wait(NULL);
+        tmp = tmp->next;
     }
     dup2(save_in, 0);
 }
