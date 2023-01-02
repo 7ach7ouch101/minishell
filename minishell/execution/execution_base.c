@@ -103,6 +103,14 @@ void    execute_cmd(t_cmd *cmd, t_env *env, char **envp)
     }
     printf("%s: command not found\n", cmd->content[0]);
 }
+void    absolute_path(t_cmd *cmd, char **envp)
+{
+    if (access(cmd->content[0], X_OK) == 0)
+    {
+        if (execve(cmd->content[0], cmd->content, envp) < 0)
+            printf("%s: command not found\n", cmd->content[0]);
+    }
+}
 void    exe_cmds(t_cmd *cmd, t_env *env, char **envp)
 {
     int pid;
@@ -118,7 +126,10 @@ void    exe_cmds(t_cmd *cmd, t_env *env, char **envp)
         if(cmd->next)
             ft_pipe(fd);
         if(check_builtins(cmd->content[0]) != 0)
+        {
+            absolute_path(cmd, envp);
             execute_cmd(cmd, env, envp);
+        }
         exit(0);
     }
     exe_builtins(cmd, env);
