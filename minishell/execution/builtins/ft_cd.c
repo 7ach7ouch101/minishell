@@ -52,7 +52,6 @@ void    ft_cd(char **str, t_env *env)
         get_the_path(env, "HOME");
     else
     {
-        chdir(str[1]);
         if(chdir(str[1]) == -1)
             printf("cd: path not found.\n");
     }

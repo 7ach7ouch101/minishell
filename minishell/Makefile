@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: ahel-bah <ahel-bah@student.42.fr>          +#+  +:+       +#+         #
+#    By: mmeziani <mmeziani@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/06/19 15:18:51 by ahel-bah          #+#    #+#              #
-#    Updated: 2022/09/10 23:21:58 by ahel-bah         ###   ########.fr        #
+#    Updated: 2023/01/03 19:14:10 by mmeziani         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -38,7 +38,7 @@ OBJ = $(SRC:.c=.o)
 all: $(LIBFT) $(NAME)
 
 $(NAME): $(OBJ)
-	$(CC)  $(OBJ) -L $(shell brew --prefix readline)/lib -lreadline -o \
+	$(CC) $(OBJ) -L $(shell brew --prefix readline)/lib -lreadline -o \
 	$(NAME) $(LIBFT)
 
 $(LIBFT):
