@@ -45,7 +45,6 @@ int check_builtins(char *str)
         return (0);
     return (1);
 }
-
 void    redirections(t_red *red)
 {
     int fd;
@@ -80,6 +79,16 @@ void    redirections(t_red *red)
         close(red->pipe_0);
     }
 }
+void    red_test(t_red *red)
+{
+    t_red *tmp;
+    tmp=red;
+    while(tmp)
+    {
+        redirections(tmp);
+        tmp=tmp->next;
+    }
+}
 void    execute_cmd(t_cmd *cmd, t_env *env, char **envp)
 {
     char **str;
@@ -87,6 +96,8 @@ void    execute_cmd(t_cmd *cmd, t_env *env, char **envp)
     int i;
 
     i = 0;
+    if(!cmd->content[0]||!cmd->content)
+        exit(0);
     while(env->next)
     {
         if(ft_strcmpp(env->name, "PATH") == 0)
@@ -98,15 +109,15 @@ void    execute_cmd(t_cmd *cmd, t_env *env, char **envp)
                 if (access(ft_strjoin(tmp , cmd->content[0]), X_OK) == 0)
                 {
                     tmp = ft_strjoin(tmp , cmd->content[0]);
-                    if(execve(tmp, cmd->content, envp) < 0)
-                        printf("%s: command not found\n", tmp);
+                    break;
                 }   
                 free(tmp);
             }
         }
         env = env->next;
     }
-    printf("%s: command not found\n", cmd->content[0]);
+   if(execve(tmp, cmd->content, envp) < 0)
+        printf("%s: command not found\n", cmd->content[0]);
 }
 
 void    absolute_path(t_cmd *cmd, char **envp)
@@ -124,19 +135,24 @@ void    exe_cmds(t_cmd *cmd, t_env *env, char **envp)
     int fd[2];
 
     if (!cmd->next && check_builtins(cmd->content[0]) == 0)
+    {
+        red_test(cmd->red);
         exe_builtins(cmd, env);
+    }
     else
     {
-        if(cmd->next && !cmd->red)
+        if(cmd->next)
             pipe(fd);
         pid = fork();
         if(pid < 0)
             return ;
         if(pid == 0)
         {
+            
             if(cmd->next)
                 ft_pipe(fd);
             exe_builtins(cmd, env);
+            red_test(cmd->red);
             if(check_builtins(cmd->content[0]) != 0)
             {
                 absolute_path(cmd, envp);
@@ -153,26 +169,15 @@ void    exe_cmds(t_cmd *cmd, t_env *env, char **envp)
 
 void    execution_base(t_cmd *cmd, t_env *env, char **envp)
 {
-    int fd[2];
     int save_in;
     t_cmd *tmp;
 
     tmp = cmd;
     save_in = dup(0);
-    fd[0] = dup(0);
-	fd[1] = dup(1);
+
     while(cmd)
     {
-        if(cmd->red)
-            redirections(cmd->red);
         exe_cmds(cmd, env, envp);
-        if(cmd->red)
-        {
-            dup2(fd[1], 1);
-            dup2(fd[0], 0);
-            close(fd[1]);
-            close(fd[0]);
-        }
         cmd = cmd->next;
     }
     while(tmp)
