@@ -74,6 +74,11 @@ void    redirections(t_red *red)
         dup2(fd, 0);
         close(fd);
     }
+    // if(red->type == HERDOC)
+    // {
+    //     dup2(red->pipe_0, 1);
+    //     close(red->pipe_0);
+    // }
 }
 void    execute_cmd(t_cmd *cmd, t_env *env, char **envp)
 {
@@ -116,27 +121,32 @@ void    exe_cmds(t_cmd *cmd, t_env *env, char **envp)
     int pid;
     int fd[2];
 
-    if(cmd->next)
-        pipe(fd);
-    pid = fork();
-    if(pid < 0)
-        return ;
-    if(pid == 0)
+    if (!cmd->next && check_builtins(cmd->content[0]) == 0)
+        exe_builtins(cmd, env);
+    else
     {
         if(cmd->next)
-            ft_pipe(fd);
-        if(check_builtins(cmd->content[0]) != 0)
+            pipe(fd);
+        pid = fork();
+        if(pid < 0)
+            return ;
+        if(pid == 0)
         {
-            absolute_path(cmd, envp);
-            execute_cmd(cmd, env, envp);
+            if(cmd->next)
+                ft_pipe(fd);
+            exe_builtins(cmd, env);
+            if(check_builtins(cmd->content[0]) != 0)
+            {
+                absolute_path(cmd, envp);
+                execute_cmd(cmd, env, envp);
+            }
+            exit(0);
         }
-        exit(0);
+        if(cmd->next)
+            ft_pipe2(fd);
+        else
+            close(0);
     }
-    exe_builtins(cmd, env);
-    if(cmd->next)
-        ft_pipe2(fd);
-    else
-        close(0);
 }
 
 void    execution_base(t_cmd *cmd, t_env *env, char **envp)
