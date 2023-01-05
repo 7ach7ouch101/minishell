@@ -2,56 +2,65 @@
 
 void    print_env(t_env *env)
 {
-    while(env->next)
-    {
+    while(env)
+    {   
         printf("declare -x %s=\"%s\"\n", env->name, env->content);
         env = env->next;
     }
 }
-int parse(char *str)
+int is_numor_char(char c)
 {
-    int i;
-
-    i = 0;
-    if(!(str[i] == '_' || (str[i] >= 'a' && str[i] <= 'z') || (str[i] >= 'A' && str[i] <= 'Z')))
+    if((c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') || (c >= 'A' && c <= 'Z'))
+        return (1);
+    return (0);
+}
+int charcmp(char c, char d)
+{
+    if(c == d)
         return (0);
     return (1);
 }
-t_env    *import_arg(char *str, t_env *env)
+int parse(char *str)
 {
-    t_env *t;
-    t_env *head;
+    int i;
+    int check;
 
-    head = env;
-    while(env->next)
-        env = env->next;
-    t = malloc(sizeof(t_env));
-    env->next = t;
-    t->name = ft_strdup("test");
-    t->content = ft_strdup("haa");
-    t->next = NULL;
-    return (head);
+    i = 0;
+    check = 0;
+    if(!(str[i] == '_' || (str[i] >= 'a' && str[i] <= 'z') || (str[i] >= 'A' && str[i] <= 'Z')))
+        return (0);
+    i++;
+    while(charcmp(str[i], '=') != 0 && str[i])
+    {
+        if(is_numor_char(str[i]) == 0 && (str[i] != '_'))
+            return (0);
+        i++;
+    }
+    return (1);
 }
-void    ft_export(char **str, t_env *env)
+
+void    import_arg(char *str, t_env **env)
+{
+    
+    ft_lstadd_backk(env, ft_lstneww("test", "test1"));
+}
+
+void    ft_export(char **str, t_env **env)
 { 
     int i;
 
     i = 1;
     if(!(str[1]))
-        print_env(env);
-    while(str[i])
+        print_env(*env);
+    else
     {
-        if(parse(str[i]) == 0)
+        while(str[i])
         {
-            printf("export: %s: not a valid identifier\n", str[i]);
-            return ;
+            if (parse(str[i]) == 0)
+                printf("export: %s: not a valid identifier\n", str[i]);
+            else
+                import_arg(*str , env);  
+            i++;
         }
-        env = import_arg(str[i], env);
-        /*while(env->next)
-        {
-            printf("%s\n", env->name);
-            env = env->next;
-        }*/
-        i++;
     }
 }

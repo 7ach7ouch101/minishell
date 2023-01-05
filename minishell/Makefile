@@ -6,7 +6,7 @@
 #    By: mmeziani <mmeziani@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/06/19 15:18:51 by ahel-bah          #+#    #+#              #
-#    Updated: 2023/01/03 19:14:10 by mmeziani         ###   ########.fr        #
+#    Updated: 2023/01/04 18:49:09 by mmeziani         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -39,7 +39,7 @@ all: $(LIBFT) $(NAME)
 
 $(NAME): $(OBJ)
 	$(CC) $(OBJ) -L $(shell brew --prefix readline)/lib -lreadline -o \
-	$(NAME) $(LIBFT)
+	$(NAME) $(LIBFT) -g #-fsanitize=address
 
 $(LIBFT):
 	make bonus -C libft

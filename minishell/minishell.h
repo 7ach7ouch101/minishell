@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahel-bah <ahel-bah@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mmeziani <mmeziani@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/08 17:06:52 by ahel-bah          #+#    #+#             */
-/*   Updated: 2022/09/10 23:52:54 by ahel-bah         ###   ########.fr       */
+/*   Updated: 2023/01/04 23:39:17 by mmeziani         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@
 #include <sys/wait.h>
 
 //int	g_exit_status;
+
 
 typedef struct s_red
 {
@@ -69,15 +70,17 @@ typedef struct s_env
 
 //....................../execution/.....................
 
-t_env   *fill_env(char **envp, t_env *env);
+t_env	*create_list(char **str);
+t_env	*ft_lstneww(char *env_name, char *env_content);
+void	ft_lstadd_backk(t_env **lst, t_env *new);
 void    execution_base(t_cmd *cmd, t_env *env, char **envp);
 void  	ft_echo(char **str);
 void    ft_cd(char **str, t_env *env);
 void    ft_env(char **str, t_env *env);
 void    ft_pwd(void);
 int 	ft_strcmpp(char *str1, char *str2);
-void    ft_export(char **str, t_env *env);
-t_env   *ft_unset(t_env **env, t_cmd *cmd);
+void    ft_export(char **str, t_env **env);
+void	ft_unset(t_env *env, t_cmd *cmd);
 
 //....................../include/.......................
 

@@ -13,7 +13,7 @@ void    ft_pipe2(int fd[])
     close(fd[1]);
 }
 
-void    redirections(t_red *red)
+int    redirections(t_red *red)
 {
     int fd;
 
@@ -36,7 +36,8 @@ void    redirections(t_red *red)
         if(fd < 0)
         {
             printf("%s: No such file or directory\n", red->file_name);
-            return ;
+            //exit(0);
+            return 0;
         }
         dup2(fd, 0);
         close(fd);
@@ -55,7 +56,8 @@ void    red_test(t_red *red)
 
     while(tmp)
     {
-        redirections(tmp);
+        if(redirections(tmp) == 0)
+            break ;
         tmp = tmp->next;
     }
     return ;
@@ -77,10 +79,10 @@ void    exe_builtins(t_cmd *cmd, t_env *env)
         ft_cd(cmd->content, env);
     else if(ft_strcmpp(cmd->content[0], "pwd") == 0)
         ft_pwd();
-    else if(ft_strcmpp(cmd->content[0], "unset") == 0)
-        ft_unset(&env, cmd);
+    /*else if(ft_strcmpp(cmd->content[0], "unset") == 0)
+        ft_unset(env, cmd);*/
     else if(ft_strcmpp(cmd->content[0], "export") == 0)
-        ft_export(cmd->content, env);
+        ft_export(cmd->content, &env);
     dup2(fd[1] , 1);
     dup2(fd[0], 0);
 }
@@ -148,11 +150,8 @@ void    exe_cmds(t_cmd *cmd, t_env *env, char **envp)
     int pid;
     int fd[2];
 
-    if (!cmd->next && check_builtins(cmd->content[0]) == 0)
-    {
-        //red_test(cmd->red);
+    if (!cmd->next && ft_strcmpp(cmd->content[0], "cd") == 0)
         exe_builtins(cmd, env);
-    }
     else
     {
         if(cmd->next)
@@ -187,7 +186,6 @@ void    execution_base(t_cmd *cmd, t_env *env, char **envp)
 
     tmp = cmd;
     save_in = dup(0);
-
     while(cmd)
     {
         exe_cmds(cmd, env, envp);

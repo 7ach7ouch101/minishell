@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahel-bah <ahel-bah@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mmeziani <mmeziani@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/04 17:42:55 by ahel-bah          #+#    #+#             */
-/*   Updated: 2022/09/10 23:52:47 by ahel-bah         ###   ########.fr       */
+/*   Updated: 2023/01/04 23:22:20 by mmeziani         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ int	main(int ac, char **av, char **envp)
 	signal(SIGQUIT, SIG_IGN);
 	ac = 0;
 	av = NULL;
-	env = fill_env(envp, env);
+	env = create_list(envp);
 	while (1)
 	{
 		buff = readline("minishell:~$ ");
