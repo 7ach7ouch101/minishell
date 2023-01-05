@@ -32,21 +32,36 @@ int parse(char *str)
     i++;
     while(charcmp(str[i], '=') != 0 && str[i])
     {
-        if(is_numor_char(str[i]) == 0 && (str[i] != '_'))
+        if(charcmp(str[i], '+') == 0 && charcmp(str[i + 1] , '=') == 0)
+            i++;
+        else if(is_numor_char(str[i]) == 0 && (str[i] != '_'))
             return (0);
-        i++;
+        else
+            i++;
     }
     return (1);
 }
 
 void    import_arg(char *str, t_env **env)
 {
-    
-    ft_lstadd_backk(env, ft_lstneww("test", "test1"));
+    /*int i;
+    char *str1;
+    i = 0;
+    while(str[i])
+    {
+        if(charcmp(str[i], '=') == 0)
+        {
+            //printf("test\n");
+            //ft_lstadd_backk(env, ft_lstneww(ft_strlcpy(str1, str, i), "test1"));
+            break ;
+        }
+        i++;
+    }*/
 }
 
 void    ft_export(char **str, t_env **env)
 { 
+    //ft_lstadd_backk(env, ft_lstneww("test", "test1"));
     int i;
 
     i = 1;
@@ -59,7 +74,11 @@ void    ft_export(char **str, t_env **env)
             if (parse(str[i]) == 0)
                 printf("export: %s: not a valid identifier\n", str[i]);
             else
-                import_arg(*str , env);  
+            {
+                ft_lstadd_backk(env, ft_lstneww("test", "test1"));
+                //import_arg(str[i] , env);  
+            }
+            //printf("test\n");
             i++;
         }
     }
