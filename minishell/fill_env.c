@@ -36,6 +36,10 @@ t_env	*create_list(char **str)
 
 	i = 0;
 	env = NULL;
+	if(!str[i])
+	{
+		ft_lstadd_backk(&env, ft_lstneww(ft_strdup("SHLVL"), ft_strdup("1")));
+	}
 	while (str[i])
 	{
 		str1 = ft_split(str[i], '=');
