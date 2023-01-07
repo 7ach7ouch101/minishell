@@ -79,8 +79,8 @@ void    exe_builtins(t_cmd *cmd, t_env *env)
         ft_cd(cmd->content, env);
     else if(ft_strcmpp(cmd->content[0], "pwd") == 0)
         ft_pwd();
-    /*else if(ft_strcmpp(cmd->content[0], "unset") == 0)
-        ft_unset(env, cmd);*/
+    else if(ft_strcmpp(cmd->content[0], "unset") == 0)
+        ft_unset(&env, cmd);
     else if(ft_strcmpp(cmd->content[0], "export") == 0)
         ft_export(cmd->content, &env);
     dup2(fd[1] , 1);

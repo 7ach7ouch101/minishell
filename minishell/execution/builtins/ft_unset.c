@@ -6,21 +6,23 @@ void    free_node(t_env *tmp)
     free(tmp);
 }
 
-void    ft_unset(t_env *env, t_cmd *cmd)
+void    ft_unset(t_env **env, t_cmd *cmd)
 {
     t_env *head;
     t_env *tmp;
     int i;
 
     i = 1;
-    if(ft_strcmpp(env->name, cmd->content[i]) == 0)
+    /*if(ft_strcmpp((*env)->name, cmd->content[i]) == 0)
     {
-        tmp = env; 
-        env = env->next;
+        tmp = *env; 
+        (*env) = (*env)->next;
         free_node(tmp);
+        ft_lstclear(env, tmp);
         i++;
-    }
-    head = env;
+    }*/
+
+    head = (*env);
     while(cmd->content[i])
     {
         while(head)
@@ -34,7 +36,7 @@ void    ft_unset(t_env *env, t_cmd *cmd)
             }
             head = head->next;
         }
-        //head = env;
+        head = *env;
         i++;
     }
 }

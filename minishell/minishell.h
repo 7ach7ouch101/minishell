@@ -80,7 +80,7 @@ void    ft_env(char **str, t_env *env);
 void    ft_pwd(void);
 int 	ft_strcmpp(char *str1, char *str2);
 void    ft_export(char **str, t_env **env);
-void	ft_unset(t_env *env, t_cmd *cmd);
+void	ft_unset(t_env **env, t_cmd *cmd);
 
 //....................../include/.......................
 
