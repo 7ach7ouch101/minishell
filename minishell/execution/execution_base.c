@@ -150,7 +150,7 @@ void    exe_cmds(t_cmd *cmd, t_env *env, char **envp)
     int pid;
     int fd[2];
 
-    if (!cmd->next && ft_strcmpp(cmd->content[0], "cd") == 0)
+    if (!cmd->next && check_builtins(cmd->content[0]) == 0)
         exe_builtins(cmd, env);
     else
     {

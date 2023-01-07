@@ -18,10 +18,10 @@ char	*ft_strlcpy(char *dst, char *src, int dstsize)
 	int	srcsize;
 
 	i = 0;
-	srcsize = ft_strlen(src);
+	dst = malloc((dstsize + 1) * sizeof(char));
 	if (dstsize == 0)
-		return (srcsize);
-	while (src[i] != '\0' && i < dstsize - 1)
+		return (NULL);
+	while (src[i] != '\0' && i < dstsize)
 	{
 		dst[i] = src[i];
 		i++;

@@ -3,23 +3,47 @@
 void    print_env(t_env *env)
 {
     while(env)
-    {   
-        printf("declare -x %s=\"%s\"\n", env->name, env->content);
+    {
+        if(!(env->content))
+            printf("declare -x %s\n", env->name);
+        else
+            printf("declare -x %s=\"%s\"\n", env->name, env->content);
         env = env->next;
     }
 }
-int is_numor_char(char c)
-{
-    if((c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') || (c >= 'A' && c <= 'Z'))
-        return (1);
-    return (0);
-}
+
 int charcmp(char c, char d)
 {
     if(c == d)
         return (0);
     return (1);
 }
+
+int check_ifitsthere(char *str, t_env *env)
+{
+    int i;
+    int j;
+
+    while(env)
+    {
+        i = 0;
+        while(str[i] == env->name[i])
+            i++;
+        if(!env->name[i])
+            return (0);
+        env = env->next;
+    }
+    return (1);
+}
+
+int is_numor_char(char c)
+{
+    if((c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') || (c >= 'A' && c <= 'Z'))
+        return (1);
+    return (0);
+}
+
+
 int parse(char *str)
 {
     int i;
@@ -41,27 +65,85 @@ int parse(char *str)
     }
     return (1);
 }
+void    join_content(char *str, t_env *env)
+{
+    int i;
 
+    while(env)
+    {
+        i = 0;
+        while(str[i] == env->name[i])
+            i++;
+        if(!env->name[i])
+        {
+            i = 0;
+            while(charcmp(str[i], '=') != 0)
+                i++;
+            env->content = ft_strjoin(env->content, &str[i + 1]);
+            return ;
+        }
+        env = env->next;
+    }
+}
+void    init_content(char *str, t_env *env)
+{
+    int i;
+
+    while(env)
+    {
+        i = 0;
+        while(str[i] == env->name[i])
+            i++;
+        if(!env->name[i])
+        {
+            i = 0;
+            while(charcmp(str[i], '=') != 0)
+                i++;
+            free(env->content);
+            env->content = ft_strdup(&str[i + 1]);
+            return ;
+        }
+        env = env->next;
+    }
+}
 void    import_arg(char *str, t_env **env)
 {
-    /*int i;
+    int i;
     char *str1;
+    char *str2;
+
     i = 0;
+    if(check_ifitsthere(str, *env) == 0)
+    {
+        while(str[i])
+        {
+            if(charcmp(str[i], '+') == 0)
+            {
+                join_content(str, *env);
+                return ;
+            }
+            else if(charcmp(str[i], '=') == 0)
+                init_content(str, *env);
+            i++;
+        }
+        return ;
+    }
     while(str[i])
     {
         if(charcmp(str[i], '=') == 0)
         {
-            //printf("test\n");
-            //ft_lstadd_backk(env, ft_lstneww(ft_strlcpy(str1, str, i), "test1"));
-            break ;
+            ft_lstadd_backk(env, ft_lstneww(ft_strlcpy(str1, str, i), 
+                            ft_strlcpy(str2, &str[i + 1], ft_strlen(&str[i]))));
+            return ;
         }
         i++;
-    }*/
+    }
+    if(!str[i])
+        ft_lstadd_backk(env, ft_lstneww(ft_strdup(str), NULL));
 }
 
 void    ft_export(char **str, t_env **env)
-{ 
-    //ft_lstadd_backk(env, ft_lstneww("test", "test1"));
+{
     int i;
 
     i = 1;
@@ -74,11 +156,7 @@ void    ft_export(char **str, t_env **env)
             if (parse(str[i]) == 0)
                 printf("export: %s: not a valid identifier\n", str[i]);
             else
-            {
-                ft_lstadd_backk(env, ft_lstneww("test", "test1"));
-                //import_arg(str[i] , env);  
-            }
-            //printf("test\n");
+                import_arg(str[i] , env);
             i++;
         }
     }
