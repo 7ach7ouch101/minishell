@@ -23,7 +23,7 @@ void    ft_unset(t_env **env, t_cmd *cmd)
     }*/
 
     head = (*env);
-    while(cmd->content[i])
+    while(cmd->content[i] && cmd->content[i][0])
     {
         while(head)
         {

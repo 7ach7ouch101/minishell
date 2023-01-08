@@ -21,15 +21,20 @@ int charcmp(char c, char d)
 
 int check_ifitsthere(char *str, t_env *env)
 {
+    char *str1;
     int i;
-    int j;
 
+    i = 0;
     while(env)
     {
         i = 0;
-        while(str[i] == env->name[i])
+        while((charcmp(str[i + 1], '=') == 1 && charcmp(str[i], '+') == 1) && str[i])
             i++;
-        if(!env->name[i])
+        if(charcmp(str[i], '=') == 0)
+            i++;
+        if(charcmp(str[i], '+') == 0)
+            i--;
+        if(ft_strcmpp(ft_strlcpy(str1 , str, i + 1), env->name) == 0)
             return (0);
         env = env->next;
     }
@@ -42,7 +47,6 @@ int is_numor_char(char c)
         return (1);
     return (0);
 }
-
 
 int parse(char *str)
 {
@@ -65,40 +69,40 @@ int parse(char *str)
     }
     return (1);
 }
+
 void    join_content(char *str, t_env *env)
 {
     int i;
+    char *str1;
 
     while(env)
     {
         i = 0;
-        while(str[i] == env->name[i])
-            i++;
-        if(!env->name[i])
-        {
-            i = 0;
-            while(charcmp(str[i], '=') != 0)
+        while(charcmp(str[i], '+') != 0)
                 i++;
-            env->content = ft_strjoin(env->content, &str[i + 1]);
+        if(ft_strcmpp(ft_strlcpy(str1 , str, i), env->name) == 0)
+        {
+            if(!env->content)
+                env->content = ft_strjoin(&str[i + 2], "");
+            else
+                env->content = ft_strjoin(env->content, &str[i + 2]);
             return ;
         }
         env = env->next;
     }
 }
+
 void    init_content(char *str, t_env *env)
 {
     int i;
+    char *str1;
 
     while(env)
     {
-        i = 0;
-        while(str[i] == env->name[i])
+        while(charcmp(str[i], '=') != 0)
             i++;
-        if(!env->name[i])
+        if(ft_strcmpp(ft_strlcpy(str1, str, i), env->name) == 0)
         {
-            i = 0;
-            while(charcmp(str[i], '=') != 0)
-                i++;
             free(env->content);
             env->content = ft_strdup(&str[i + 1]);
             return ;
@@ -106,6 +110,7 @@ void    init_content(char *str, t_env *env)
         env = env->next;
     }
 }
+
 void    import_arg(char *str, t_env **env)
 {
     int i;
@@ -132,13 +137,15 @@ void    import_arg(char *str, t_env **env)
     {
         if(charcmp(str[i], '=') == 0)
         {
-            ft_lstadd_backk(env, ft_lstneww(ft_strlcpy(str1, str, i), 
-                            ft_strlcpy(str2, &str[i + 1], ft_strlen(&str[i]))));
+            if(charcmp(str[i - 1], '+') == 0)
+                ft_lstadd_backk(env, ft_lstneww(ft_strlcpy(str1, str, i - 1), ft_strlcpy(str2, &str[i + 1], ft_strlen(&str[i]))));
+            else
+                ft_lstadd_backk(env, ft_lstneww(ft_strlcpy(str1, str, i), ft_strlcpy(str2, &str[i + 1], ft_strlen(&str[i]))));
             return ;
         }
         i++;
     }
-    if(!str[i])
+    if(!str[i] && check_ifitsthere(str, *env) == 1)
         ft_lstadd_backk(env, ft_lstneww(ft_strdup(str), NULL));
 }
 

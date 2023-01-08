@@ -32,11 +32,12 @@ int    redirections(t_red *red)
     }
     if(red->type == INFILE)
     {
+        int save_out = dup(1);
         fd = open(red->file_name, O_RDONLY);
         if(fd < 0)
         {
+            dup2(fd, save_out);
             printf("%s: No such file or directory\n", red->file_name);
-            //exit(0);
             return 0;
         }
         dup2(fd, 0);
@@ -56,8 +57,8 @@ void    red_test(t_red *red)
 
     while(tmp)
     {
-        if(redirections(tmp) == 0)
-            break ;
+        if (redirections(tmp) == 0)
+            exit(0);
         tmp = tmp->next;
     }
     return ;
@@ -83,8 +84,11 @@ void    exe_builtins(t_cmd *cmd, t_env *env)
         ft_unset(&env, cmd);
     else if(ft_strcmpp(cmd->content[0], "export") == 0)
         ft_export(cmd->content, &env);
-    dup2(fd[1] , 1);
-    dup2(fd[0], 0);
+    if(cmd->red)
+    {
+        dup2(fd[1] , 1);
+        dup2(fd[0], 0);
+    }
 }
 
 int check_builtins(char *str)
@@ -150,33 +154,29 @@ void    exe_cmds(t_cmd *cmd, t_env *env, char **envp)
     int pid;
     int fd[2];
 
-    if (!cmd->next && check_builtins(cmd->content[0]) == 0)
-        exe_builtins(cmd, env);
-    else
+    if(cmd->next)
+        pipe(fd);
+    pid = fork();
+    if(pid < 0)
+        return ;
+    if(pid == 0)
     {
         if(cmd->next)
-            pipe(fd);
-        pid = fork();
-        if(pid < 0)
-            return ;
-        if(pid == 0)
-        {
-            if(cmd->next)
-                ft_pipe(fd);
-            red_test(cmd->red);
+            ft_pipe(fd);
+        red_test(cmd->red);
+        if(check_builtins(cmd->content[0]) == 0)
             exe_builtins(cmd, env);
-            if(check_builtins(cmd->content[0]) != 0)
-            {
-                absolute_path(cmd, envp);
-                execute_cmd(cmd, env, envp);
-            }
-            exit(0);
+        if(check_builtins(cmd->content[0]) != 0)
+        {
+            absolute_path(cmd, envp);
+            execute_cmd(cmd, env, envp);
         }
-        if(cmd->next)
-            ft_pipe2(fd);
-        else
-            close(0);
+        exit(0);
     }
+    if(cmd->next)
+        ft_pipe2(fd);
+    else
+        close(0);
 }
 
 void    execution_base(t_cmd *cmd, t_env *env, char **envp)
@@ -186,6 +186,11 @@ void    execution_base(t_cmd *cmd, t_env *env, char **envp)
 
     tmp = cmd;
     save_in = dup(0);
+    if (!cmd->next && check_builtins(cmd->content[0]) == 0)
+    {
+        exe_builtins(cmd, env);
+        cmd = cmd->next;
+    }
     while(cmd)
     {
         exe_cmds(cmd, env, envp);

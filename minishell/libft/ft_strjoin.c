@@ -18,8 +18,8 @@ char	*ft_strjoin(char *s1, char *s2)
 	size_t	i;
 	size_t	j;
 
-	if (!s1 || !s2)
-		return (0);
+	/*if (!s1 || !s2)
+		return (0);*/
 	al = malloc(ft_strlen(s1) + ft_strlen(s2) + 1);
 	if (al == 0)
 		return (0);
