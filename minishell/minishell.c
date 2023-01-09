@@ -6,7 +6,7 @@
 /*   By: mmeziani <mmeziani@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/04 17:42:55 by ahel-bah          #+#    #+#             */
-/*   Updated: 2023/01/04 23:22:20 by mmeziani         ###   ########.fr       */
+/*   Updated: 2023/01/09 01:29:31 by mmeziani         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 extern int	g_exit_status;
 
-static void	check_line(char *buff, t_env *env, char **envp)
+static void	check_line(char *buff, t_env **env, char **envp)
 {
 	t_list	*arg;
 	t_cmd	*cmd;
@@ -23,7 +23,7 @@ static void	check_line(char *buff, t_env *env, char **envp)
 	if (buff[0])
 	{
 		add_history(buff);
-		if (lex(buff, &arg, env) || only_space(arg))
+		if (lex(buff, &arg, *env) || only_space(arg))
 			ft_lstclear(&arg, free);
 		else
 		{
@@ -67,7 +67,7 @@ int	main(int ac, char **av, char **envp)
 			printf("exit\n");
 			exit(0);
 		}
-		check_line(buff, env, envp);
+		check_line(buff, &env, envp);
 		free(buff);
 	}
 	return (0);

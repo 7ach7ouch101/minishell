@@ -13,19 +13,17 @@ void    ft_unset(t_env **env, t_cmd *cmd)
     int i;
 
     i = 1;
-    /*if(ft_strcmpp((*env)->name, cmd->content[i]) == 0)
+    if(ft_strcmpp((*env)->name, cmd->content[i]) == 0)
     {
         tmp = *env; 
         (*env) = (*env)->next;
         free_node(tmp);
-        ft_lstclear(env, tmp);
         i++;
-    }*/
-
+    }
     head = (*env);
     while(cmd->content[i] && cmd->content[i][0])
     {
-        while(head)
+        while(head && head->next)
         {
             if(ft_strcmpp(head->next->name, cmd->content[i]) == 0)
             {

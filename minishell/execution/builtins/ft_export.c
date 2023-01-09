@@ -99,6 +99,7 @@ void    init_content(char *str, t_env *env)
 
     while(env)
     {
+        i = 0;
         while(charcmp(str[i], '=') != 0)
             i++;
         if(ft_strcmpp(ft_strlcpy(str1, str, i), env->name) == 0)

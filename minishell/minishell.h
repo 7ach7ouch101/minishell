@@ -6,7 +6,7 @@
 /*   By: mmeziani <mmeziani@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/08 17:06:52 by ahel-bah          #+#    #+#             */
-/*   Updated: 2023/01/04 23:39:17 by mmeziani         ###   ########.fr       */
+/*   Updated: 2023/01/09 01:29:55 by mmeziani         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ typedef struct s_env
 t_env	*create_list(char **str);
 t_env	*ft_lstneww(char *env_name, char *env_content);
 void	ft_lstadd_backk(t_env **lst, t_env *new);
-void    execution_base(t_cmd *cmd, t_env *env, char **envp);
+void    execution_base(t_cmd *cmd, t_env **env, char **envp);
 void  	ft_echo(char **str);
 void    ft_cd(char **str, t_env *env);
 void    ft_env(char **str, t_env *env);

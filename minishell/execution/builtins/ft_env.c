@@ -6,7 +6,7 @@ void    ft_env(char **str, t_env *env)
     {
         while(env)
         {
-            if(env->content)
+            if(env && env->content)
                 printf("%s=%s\n", env->name, env->content);
             env = env->next;
         }
