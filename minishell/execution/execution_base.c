@@ -77,10 +77,8 @@ void    exe_builtins(t_cmd *cmd, t_env **env)
 	fd[1] = dup(1);
 	fd[0] = dup(0);
 	if(cmd->red)
-	{
 		if(red_test(cmd->red) == 0)
 			return ;
-	}
 	if(ft_strcmpp(cmd->content[0], "echo") == 0)
 		ft_echo(cmd->content);
 	else if(ft_strcmpp(cmd->content[0], "env") == 0)
@@ -93,6 +91,8 @@ void    exe_builtins(t_cmd *cmd, t_env **env)
 		ft_unset(env, cmd);
 	else if(ft_strcmpp(cmd->content[0], "export") == 0)
 		ft_export(cmd->content, env);
+	else if(ft_strcmpp(cmd->content[0], "exit") == 0)
+		ft_exit(cmd->content);
 	if(cmd->red)
 	{
 		dup2(fd[1] , 1);
@@ -113,6 +113,8 @@ int check_builtins(char *str)
 	else if(ft_strcmpp(str, "unset") == 0)
 		return (0);
 	else if(ft_strcmpp(str, "export") == 0)
+		return (0);
+	else if(ft_strcmpp(str, "exit") == 0)
 		return (0);
 	return (1);
 }

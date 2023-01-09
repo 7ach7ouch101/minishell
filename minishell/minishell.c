@@ -50,6 +50,8 @@ void	handler(int sig)
 
 int	main(int ac, char **av, char **envp)
 {
+	(void)ac;
+	(void)av;
 	char	*buff;
 	t_env	*env;
 

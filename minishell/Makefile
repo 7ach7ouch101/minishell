@@ -25,7 +25,7 @@ SRC = minishell.c \
 	  lexing/define_opp.c lexing/double_quoting.c lexing/single_quoting.c\
 	  lexing/ft_herdoc.c lexing/lex.c lexing/spaces.c\
 \
-	  parsing/ft_errors.c parsing/redirections_parser.c parsing/split_pipe.c\
+	  parsing/ft_errors.c parsing/redirections_parser.c parsing/split_pipe.c execution/builtins/ft_exit.c\
 	  parsing/wildcard.c  execution/execution_base.c execution/builtins/ft_echo.c\
 	  execution/builtins/ft_cd.c fill_env.c execution/builtins/ft_env.c\
 		execution/builtins/ft_pwd.c execution/builtins/ft_unset.c execution/builtins/ft_export.c\
