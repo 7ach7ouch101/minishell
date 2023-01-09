@@ -13,7 +13,7 @@ void    ft_pipe2(int fd[])
 	close(fd[1]);
 }
 
-void    redirections(t_red *red)
+int    redirections(t_red *red)
 {
 	int fd;
 
@@ -21,12 +21,16 @@ void    redirections(t_red *red)
 	if(red->type == APPAND)
 	{
 		fd = open(red->file_name, O_APPEND | O_CREAT | O_WRONLY, 0666);
+		if(fd < 0)
+			return (0);
 		dup2(fd, 1);
 		close(fd);
 	}
 	if(red->type == OUTFILE)
 	{
 		fd = open(red->file_name, O_WRONLY | O_CREAT | O_TRUNC, 0666);
+		if(fd < 0)
+			return (0);
 		dup2(fd, 1);
 		close(fd);
 	}
@@ -34,11 +38,7 @@ void    redirections(t_red *red)
 	{
 		fd = open(red->file_name, O_RDONLY);
 		if(fd < 0)
-		{
-			printf("%s: No such file or directory\n", red->file_name);
-			exit(0);
-			//return ;
-		}
+			return 0;
 		dup2(fd, 0);
 		close(fd);
 	}
@@ -47,19 +47,27 @@ void    redirections(t_red *red)
 		dup2(red->pipe_0, 0);
 		close(red->pipe_0);
 	}
+	return (1);
 }
 
-void    red_test(t_red *red)
+int    red_test(t_red *red)
 {
 	t_red *tmp;
 	tmp = red;
+	int save_out;
 
+	save_out = dup(1);
 	while(tmp)
 	{
-		redirections(tmp);
+		if(redirections(tmp) == 0)
+		{
+			dup2(save_out, 1);
+			printf("%s: No such file or directory\n", red->file_name);
+			return (0);
+		}
 		tmp = tmp->next;
 	}
-	return ;
+	return (1);
 }
 
 void    exe_builtins(t_cmd *cmd, t_env **env)
@@ -69,7 +77,10 @@ void    exe_builtins(t_cmd *cmd, t_env **env)
 	fd[1] = dup(1);
 	fd[0] = dup(0);
 	if(cmd->red)
-		red_test(cmd->red);
+	{
+		if(red_test(cmd->red) == 0)
+			return ;
+	}
 	if(ft_strcmpp(cmd->content[0], "echo") == 0)
 		ft_echo(cmd->content);
 	else if(ft_strcmpp(cmd->content[0], "env") == 0)
@@ -161,7 +172,8 @@ void    exe_cmds(t_cmd *cmd, t_env **env, char **envp)
 	{
 		if(cmd->next)
 			ft_pipe(fd);
-		red_test(cmd->red);
+		if(red_test(cmd->red) == 0)
+			exit(0);
 		exe_builtins(cmd, env);
 		if(check_builtins(cmd->content[0]) != 0)
 		{
