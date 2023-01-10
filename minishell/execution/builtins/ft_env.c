@@ -2,6 +2,7 @@
 
 void    ft_env(char **str, t_env *env)
 {
+    g_exit_status = 0;
     if(!str[1])
     {
         while(env)
@@ -12,5 +13,8 @@ void    ft_env(char **str, t_env *env)
         }
     }
     else
+    {
         printf("env: no arguments needed here\n");
+        g_exit_status = 1;
+    }
 }

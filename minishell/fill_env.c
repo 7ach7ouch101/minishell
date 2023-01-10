@@ -33,12 +33,14 @@ t_env	*create_list(char **str)
 	t_env	*env;
 	char	**str1;
 	int		i;
+	int j;
 
 	i = 0;
 	env = NULL;
+	j = 0;
 	if(!str[i])
 	{
-		ft_lstadd_backk(&env, ft_lstneww(ft_strdup("SHLVL"), ft_strdup("1")));
+		ft_lstadd_backk(&env, ft_lstneww(ft_strdup("SHLVL"), ft_strdup(ft_itoa(ft_atoi("0") + 1))));
 	}
 	while (str[i])
 	{

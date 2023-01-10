@@ -155,6 +155,7 @@ void    ft_export(char **str, t_env **env)
     int i;
 
     i = 1;
+    g_exit_status = 0;
     if(!(str[1]))
         print_env(*env);
     else
@@ -162,7 +163,10 @@ void    ft_export(char **str, t_env **env)
         while(str[i])
         {
             if (parse(str[i]) == 0)
+            {
                 printf("export: %s: not a valid identifier\n", str[i]);
+                g_exit_status = 1;
+            }
             else
                 import_arg(str[i] , env);
             i++;

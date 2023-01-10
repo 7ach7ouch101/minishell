@@ -20,23 +20,26 @@ void    ft_exit(char **str)
     int num;
 
     i = 1;
-    if(is_digit(str[i]) == 0 && str[i + 1])
-    {
-        printf("exit\n");
-        printf("%s: numeric argument required\n", str[i]);
-        exit(0);
-    }
     if(!str[i])
     {
         printf("exit\n");
+        g_exit_status = 0;
         exit(0);
     }
-    if(str[2])
+    else if(is_digit(str[i]) == 0)
+    {
+        printf("exit\n");
+        printf("%s: numeric argument required\n", str[i]);
+        g_exit_status = 255;
+        exit(255);
+    }
+    else if(str[2])
     {
         printf("exit\n");
         printf("exit: too many arguments\n");
+        g_exit_status = 1;
         return ;
     }
-    //num = ft_atoi(str[i]);
-
+    g_exit_status = ft_atoi(str[i]);
+    exit(ft_atoi(str[i]));
 }

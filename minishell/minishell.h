@@ -6,7 +6,7 @@
 /*   By: mmeziani <mmeziani@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/08 17:06:52 by ahel-bah          #+#    #+#             */
-/*   Updated: 2023/01/09 01:29:55 by mmeziani         ###   ########.fr       */
+/*   Updated: 2023/01/10 03:01:06 by mmeziani         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 
-//int	g_exit_status;
+extern int	g_exit_status;
 
 
 typedef struct s_red

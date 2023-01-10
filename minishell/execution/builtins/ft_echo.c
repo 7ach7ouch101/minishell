@@ -18,19 +18,19 @@ void  ft_echo(char **str)
     int check;
 
     i = 1;
-    if(ft_strcmpp(str[i], "-n") == 0)
+    check = 0;
+    while (ft_ncmp(str[i]) == 0)
     {
-        check = 0;
+        check ++;
         i++;
     }
-    else
-        check = 1;
     while(str[i])
     {
         printf("%s",str[i]);
         i++;
     }
-    if(check)
+    if(!check)
         printf("\n");
+    g_exit_status = 0;
     return ;
 }

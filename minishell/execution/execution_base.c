@@ -1,5 +1,17 @@
 #include "../minishell.h"
 
+int	exit_status(int status)
+{
+	if (WIFEXITED(status))
+		return (WEXITSTATUS(status));
+	if (WTERMSIG(status) != SIGINT)
+	{
+		if (WTERMSIG(status) == SIGQUIT)
+			printf("Quit: ");
+	}
+	return (128 + WTERMSIG(status));
+}
+
 void	ft_pipe(int fd[])
 {
 	dup2(fd[1], 1);
@@ -146,7 +158,7 @@ void    execute_cmd(t_cmd *cmd, t_env *env, char **envp)
 		env = env->next;
 	}
    if(execve(tmp, cmd->content, envp) < 0)
-		printf("%s: command not found\n", cmd->content[0]);
+		return(printf("%s: command not found\n", cmd->content[0]),exit(127));
 }
 
 void    absolute_path(t_cmd *cmd, char **envp)
@@ -156,22 +168,39 @@ void    absolute_path(t_cmd *cmd, char **envp)
 	if (access(cmd->content[0], X_OK) == 0)
 	{
 		if (execve(cmd->content[0], cmd->content, envp) < 0)
+		{
 			printf("%s: command not found\n", cmd->content[0]);
+			exit(127);
+		}
 	}
 }
 
-void    exe_cmds(t_cmd *cmd, t_env **env, char **envp)
+void	sig_int(int sig)
+{
+	if (sig == SIGINT)
+		exit(1);
+}
+
+void	sig_int_main(int sig)
+{
+	if (sig == SIGINT)
+		printf("\n");
+}
+
+int		exe_cmds(t_cmd *cmd, t_env **env, char **envp)
 {
 	int pid;
 	int fd[2];
 
 	if(cmd->next)
 		pipe(fd);
+	signal(SIGINT, sig_int_main);
 	pid = fork();
 	if(pid < 0)
-		return ;
+		return 0;
 	if(pid == 0)
 	{
+		signal(SIGINT, sig_int);
 		if(cmd->next)
 			ft_pipe(fd);
 		if(red_test(cmd->red) == 0)
@@ -188,29 +217,33 @@ void    exe_cmds(t_cmd *cmd, t_env **env, char **envp)
 		ft_pipe2(fd);
 	else
 		close(0);
+	return (pid);
 }
 
-void    execution_base(t_cmd *cmd, t_env **env, char **envp)
+void	execution_base(t_cmd *cmd, t_env **env, char **envp)
 {
 	int save_in;
 	t_cmd *tmp;
+	int status;
+	int pid;
 
+	pid = 0;
 	tmp = cmd;
 	save_in = dup(0);
 	if (!cmd->next && check_builtins(cmd->content[0]) == 0)
 	{
 		exe_builtins(cmd, env);
 		cmd = cmd->next;
+		return ;
 	}
 	while(cmd)
 	{
-		exe_cmds(cmd, env, envp);
+		pid = exe_cmds(cmd, env, envp);
 		cmd = cmd->next;
 	}
-	while(tmp)
-	{
-		wait(NULL);
-		tmp = tmp->next;
-	}
+	waitpid(pid, &status, 0);
+	while(waitpid(-1, NULL, 0) != -1)
+	;
+	g_exit_status = exit_status(status);
 	dup2(save_in, 0);
 }

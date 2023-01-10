@@ -11,7 +11,10 @@ t_env    *update_env(t_env *env, char *old_wd)
         if(ft_strcmpp(env->name, "PWD") == 0)
         {
             if(getcwd(pwd, sizeof(pwd)) == NULL)
+            {
                 printf("Error occurred.\n");
+                g_exit_status = 1;
+            }
             free(env->content);
             env->content = ft_strdup(pwd);
         }
@@ -34,6 +37,7 @@ void    get_the_path(t_env *env, char *str)
             if(chdir(env->content) == -1)
             {
                 printf("cd: Error occurred.\n");
+                g_exit_status = 1;
                 return ;
             }
         }
@@ -44,8 +48,13 @@ void    ft_cd(char **str, t_env *env)
 {
     char old_wd[1000];
 
+    g_exit_status = 0;
     if(getcwd(old_wd, sizeof(old_wd)) == NULL)
+    {
         printf("Error occurred.\n");
+        g_exit_status = 1;
+        return ;
+    }
     if(ft_strcmpp(str[1],"-") == 0)
         get_the_path(env, "OLDPWD");
     else if(ft_strcmpp(str[1],"~") == 0 || !str[1])
@@ -53,7 +62,10 @@ void    ft_cd(char **str, t_env *env)
     else
     {
         if(chdir(str[1]) == -1)
+        {
             printf("cd: path not found.\n");
+            g_exit_status = 1;
+        }
     }
     env = update_env(env, old_wd);
 }

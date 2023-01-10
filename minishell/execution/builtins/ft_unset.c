@@ -22,6 +22,7 @@ void    ft_unset(t_env **env, t_cmd *cmd)
     t_env *tmp;
     int i;
 
+    g_exit_status = 0;
     i = 1;
     head = (*env);
     while(cmd->content[i] && cmd->content[i][0])
