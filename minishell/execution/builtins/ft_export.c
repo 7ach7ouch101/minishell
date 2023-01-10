@@ -43,7 +43,8 @@ int check_ifitsthere(char *str, t_env *env)
 
 int is_numor_char(char c)
 {
-    if((c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') || (c >= 'A' && c <= 'Z'))
+    if((c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') || 
+        (c >= 'A' && c <= 'Z'))
         return (1);
     return (0);
 }
@@ -55,7 +56,8 @@ int parse(char *str)
 
     i = 0;
     check = 0;
-    if(!(str[i] == '_' || (str[i] >= 'a' && str[i] <= 'z') || (str[i] >= 'A' && str[i] <= 'Z')))
+    if(!(str[i] == '_' || (str[i] >= 'a' && str[i] <= 'z') || 
+        (str[i] >= 'A' && str[i] <= 'Z')))
         return (0);
     i++;
     while(charcmp(str[i], '=') != 0 && str[i])
@@ -139,9 +141,11 @@ void    import_arg(char *str, t_env **env)
         if(charcmp(str[i], '=') == 0)
         {
             if(charcmp(str[i - 1], '+') == 0)
-                ft_lstadd_backk(env, ft_lstneww(ft_strlcpy(str1, str, i - 1), ft_strlcpy(str2, &str[i + 1], ft_strlen(&str[i]))));
+                ft_lstadd_backk(env, ft_lstneww(ft_strlcpy(str1, str, i - 1), 
+                ft_strlcpy(str2, &str[i + 1], ft_strlen(&str[i]))));
             else
-                ft_lstadd_backk(env, ft_lstneww(ft_strlcpy(str1, str, i), ft_strlcpy(str2, &str[i + 1], ft_strlen(&str[i]))));
+                ft_lstadd_backk(env, ft_lstneww(ft_strlcpy(str1, str, i), 
+                ft_strlcpy(str2, &str[i + 1], ft_strlen(&str[i]))));
             return ;
         }
         i++;

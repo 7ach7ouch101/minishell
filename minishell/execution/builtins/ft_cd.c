@@ -43,6 +43,16 @@ void    get_the_path(t_env *env, char *str)
         }
         env = env->next;
     }
+    if(ft_strcmpp(str , "HOME") == 0)
+    {
+        printf("cd : HOME not set\n");
+        return ;
+    }
+    if(ft_strcmpp(str , "OLDPWD") == 0)
+    {
+        printf("cd : OLDPWD not set\n");
+        return ;
+    }
 }
 void    ft_cd(char **str, t_env *env)
 {
